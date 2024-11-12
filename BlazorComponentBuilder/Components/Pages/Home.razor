@@ -2,6 +2,77 @@
 
 <PageTitle>Home</PageTitle>
 
-<h1>Hello, world!</h1>
+<div class="row">
+    <div class="col text-end">
+        <MudMenu Icon="@Icons.Material.Filled.AddCircleOutline" AriaLabel="Open user menu">
+            @*<MudMenuItem><MudIconButton Icon="@Icons.Material.Filled.LinearScale" aria-label="delete" />Line</MudMenuItem>*@
+            <MudMenuItem OnClick="(()=>Add(Type.TextField))"><MudIcon Class="m-2" Icon="@Icons.Material.Filled.TextFields" Title="TextField" />TextField</MudMenuItem>
+            <MudMenuItem OnClick="(()=>Add(Type.CheckBox))"><MudIcon Class="m-2" Icon="@Icons.Material.Filled.CheckBox" Title="CheckBox" />CheckBox</MudMenuItem>
+            <MudMenuItem OnClick="(()=>Add(Type.Radio))"><MudIcon Class="m-2" Icon="@Icons.Material.Filled.RadioButtonChecked" Title="Radio" />Radio</MudMenuItem>
+            <MudMenuItem OnClick="(()=>Add(Type.Code))"><MudIcon Class="m-2" Icon="@Icons.Material.Filled.Code" Title="Code" />Code</MudMenuItem>
+        </MudMenu>
+    </div>
+</div>
 
-Welcome to your new app.
+<article class="content px-4">
+    @foreach (var component in PageComponents)
+    {
+        @component
+    }
+</article>
+
+@code {
+    private List<RenderFragment> PageComponents { get; set; } = new List<RenderFragment>();
+
+    enum Type
+    {
+        TextField,
+        CheckBox,
+        Radio,
+        Code
+    }
+
+    private void Add(Type type)
+    {
+        switch (type)
+        {
+            case Type.TextField:
+                PageComponents.Add(builder =>
+                {
+                    builder.OpenComponent(0, typeof(MudTextField<string>)); // MudTextField
+                    builder.AddAttribute(1, "Label", "Enter text");
+                    builder.AddAttribute(2, "Variant", MudBlazor.Variant.Filled);
+                    builder.AddAttribute(3, "FullWidth", true);
+                    builder.CloseComponent();
+                });
+                break;
+            case Type.CheckBox:
+                PageComponents.Add(builder =>
+                {
+                    builder.OpenComponent(0, typeof(MudCheckBox<bool>)); // MudCheckBox
+                    builder.AddAttribute(1, "Checked", true); // وضعیت چک‌باکس
+                    builder.AddAttribute(2, "Label", "Accept Terms");
+                    builder.CloseComponent();
+                });
+                break;
+            case Type.Radio:
+                PageComponents.Add(builder =>
+                {
+                    builder.OpenComponent(0, typeof(MudRadioGroup<bool>)); // MudRadioGroup
+                    builder.AddAttribute(1, "Name", "options");
+                    builder.OpenComponent(2, typeof(MudRadio<bool>)); // MudRadio برای هر گزینه
+                    builder.AddAttribute(3, "Value", "Option1");
+                    builder.AddAttribute(4, "ChildContent", "Option 1");
+                    builder.CloseComponent();
+                    builder.OpenComponent(5, typeof(MudRadio<bool>)); // MudRadio برای گزینه دوم
+                    builder.AddAttribute(6, "Value", "Option2");
+                    builder.AddAttribute(7, "ChildContent", "Option 2");
+                    builder.CloseComponent();
+                    builder.CloseComponent();
+                });
+                break;
+            default:
+                break;
+        }
+    }
+}
